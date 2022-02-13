@@ -2,8 +2,8 @@
 Variable length sha256 hash function in Circom
 
 ## Problem
-- [Sha256](https://github.com/iden3/circomlib/tree/master/circuits/sha256) has from [circomlib](https://github.com/iden3/circomlib) requires length of the input to be known at compile time.
-- [Sha256](https://github.com/TheFrozenFire/snark-jwt-verify/blob/master/circuits/sha256.circom) from [TheFrozenFire/snark-jwt-verify](https://github.com/TheFrozenFire/snark-jwt-verify) requires the input to be crafted in a special format by an out-of-circuit function.
+- [Sha256](https://github.com/iden3/circomlib/tree/master/circuits/sha256) function from [circomlib](https://github.com/iden3/circomlib) requires length of the input to be known at compile time.
+- [Sha256](https://github.com/TheFrozenFire/snark-jwt-verify/blob/master/circuits/sha256.circom) function from [TheFrozenFire/snark-jwt-verify](https://github.com/TheFrozenFire/snark-jwt-verify) requires the input to be crafted in a special format by an out-of-circuit function.
 
 ## Solution
 Building on [TheFrozenFire/snark-jwt-verify](https://github.com/TheFrozenFire/snark-jwt-verify), this library implements variable length sha256 hash function in Circom.
