@@ -33,6 +33,8 @@ for (var i = 0; i < SHA256_LEN; i++) {
 }
 ```
 
+For more usage, see [test/sha256var.js](test/sha256var.js).
+
 ## Block space cheat sheet
 - 1 block space = max 2 blocks = max 960 bits = 0-119 characters
 - 2 block space = max 4 blocks = max 1984 bits = 0-247 characters
@@ -44,3 +46,6 @@ The circuit prepares inputs for every possible block count of the input. I.e., i
 
 ## Limitations
 The bigger the block space, the bigger the circuit. While 1 and 2 block spaces are ok, the 3 block space is slow and the 4 is slower.
+
+## Tests
+- Run `make test`
