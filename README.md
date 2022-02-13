@@ -1,5 +1,5 @@
 # Sha256Var.circom
-Variable length sha256 hash function in Circom
+Variable length sha256 hash function in [Circom](https://docs.circom.io/).
 
 ## Problem
 - [Sha256](https://github.com/iden3/circomlib/tree/master/circuits/sha256) function from [circomlib](https://github.com/iden3/circomlib) requires length of the input to be known at compile time.
