@@ -27,6 +27,7 @@ template CopyOverBlock(ToCopyBits) {
 }
 
 // Prepare sha256 input for Sha256_unsafe as if it had BlockCount blocks
+// This template effectively implements https://datatracker.ietf.org/doc/html/rfc4634#section-4.1 as a circuit
 template Sha256Input(BlockCount) {
 
     // constants
