@@ -9,7 +9,7 @@ Variable length sha256 hash function in Circom
 Building on [TheFrozenFire/snark-jwt-verify](https://github.com/TheFrozenFire/snark-jwt-verify), this circuit implements variable length sha256 hash function in Circom.
 
 ## Usage
-Given `input_bits` of length `input_bits_len`, the following code returns the hash of `input_bits`:
+Given `input` (in bits) of length `input_len` (in bits), the following code returns the hash of `input`:
 
 ```circom
 var BLOCK_LEN = 512;
@@ -22,9 +22,9 @@ var BlockSpace = 1;
 component sha256 = Sha256Var(BlockSpace);
 
 // Set input
-sha256.len <== input_bits_len;
+sha256.len <== input_len;
 for (var i = 0; i < BLOCK_LEN * MAX_BLOCKS; i++) {
-    sha256.in[i] <== input_bits[i];
+    sha256.in[i] <== input[i];
 }
 
 // Export the sha256 hash
