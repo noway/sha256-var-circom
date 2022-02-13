@@ -6,7 +6,7 @@ Variable length sha256 hash function in Circom
 - [Sha256](https://github.com/TheFrozenFire/snark-jwt-verify/blob/master/circuits/sha256.circom) function from [TheFrozenFire/snark-jwt-verify](https://github.com/TheFrozenFire/snark-jwt-verify) requires the input to be crafted in a special format by an out-of-circuit function.
 
 ## Solution
-Building on [TheFrozenFire/snark-jwt-verify](https://github.com/TheFrozenFire/snark-jwt-verify), this library implements variable length sha256 hash function in Circom.
+Building on [TheFrozenFire/snark-jwt-verify](https://github.com/TheFrozenFire/snark-jwt-verify), this circuit implements variable length sha256 hash function in Circom.
 
 ## Usage
 Given `input_bits` of length `input_bits_len`, the following code returns the hash of `input_bits`:
