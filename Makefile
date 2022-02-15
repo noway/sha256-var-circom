@@ -1,5 +1,7 @@
 .PHONY: test
 
+all: snark-jwt-verify node_modules
+
 test: snark-jwt-verify node_modules
 	yarn exec mocha
 
