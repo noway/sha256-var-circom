@@ -37,7 +37,7 @@ template Sha256Input(BlockCount) {
     // variables
     var PreLBlockLen = BLOCK_LEN - L_BITS;
 
-    // signas
+    // signals
     signal input in[BLOCK_LEN * BlockCount];
     signal input len;
     signal output out[BLOCK_LEN * BlockCount];
