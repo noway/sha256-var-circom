@@ -49,13 +49,15 @@ template Sha256InputBlock(BlockNumber, BlockCount) {
     for (var i = 0; i < BLOCK_LEN; i++) { cob.in[i] <== in[i]; }
     for (var i = 0; i < PreLBlockLen; i++) { out[i] <== cob.out[i]; }
 
-    if (BlockNumber < BlockCount - 1) {
-        // copy over the rest of the block
-        for (var i = PreLBlockLen; i < BLOCK_LEN; i++) { out[i] <== cob.out[i]; }
-    }
-    else {
-        // add L
-        for (var i = PreLBlockLen; i < BLOCK_LEN; i++) { out[i] <== n2b.out[BLOCK_LEN - 1 - i]; }
+    for (var i = PreLBlockLen; i < BLOCK_LEN; i++) { 
+        if (BlockNumber < BlockCount - 1) {
+            // copy over the rest of the block
+            out[i] <== cob.out[i]; 
+        }
+        else {
+            // add L
+            out[i] <== n2b.out[BLOCK_LEN - 1 - i];
+        }
     }
 }
 
