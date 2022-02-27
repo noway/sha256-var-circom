@@ -66,7 +66,7 @@ template Sha256Input(BlockCount) {
             n2b = Num2Bits(L_BITS);
             n2b.in <== len;
             for (var i = PreLBlockLen; i < BLOCK_LEN; i++) {
-                out[(BlockCount - 1) * BLOCK_LEN + i] <== n2b.out[BLOCK_LEN - 1 - i];
+                out[j * BLOCK_LEN + i] <== n2b.out[BLOCK_LEN - 1 - i];
             }
 
         }
