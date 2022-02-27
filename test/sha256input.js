@@ -29,10 +29,6 @@ function msgToBits(msg) {
     return inn
 }
 
-function getBlocksCount(len) {
-    return ((len + 64) >> 9) + 1
-}
-
 describe("Sha256", function () {
     this.timeout(100000);
 
@@ -48,7 +44,7 @@ describe("Sha256", function () {
 
             const inn = msgToBits(message)
 
-            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: getBlocksCount(len) }, true);
+            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: 1 }, true);
 
             const arrOut = witness.slice(1, 1 + 512);
             const actual = bitArrayToBuffer(arrOut).toString("hex");
@@ -70,7 +66,7 @@ describe("Sha256", function () {
             const inn = msgToBits(message)
             console.log("message", message, len)
             
-            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: getBlocksCount(len) }, true);
+            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: 2 }, true);
 
             const arrOut = witness.slice(1, 1 + (2*512));
             const actual = bitArrayToBuffer(arrOut).toString("hex");
@@ -92,7 +88,7 @@ describe("Sha256", function () {
             const inn = msgToBits(message)
             console.log("message", message, len)
             
-            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: getBlocksCount(len) }, true);
+            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: 3 }, true);
 
             const arrOut = witness.slice(1, (3*512));
             const actual = bitArrayToBuffer(arrOut).toString("hex");
