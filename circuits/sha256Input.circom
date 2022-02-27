@@ -6,10 +6,12 @@ include "../snark-jwt-verify/circomlib/circuits/mux1.circom";
 // Copy over 1 block of sha256 input
 // Sets bit to 1 at L_pos
 template CopyOverBlock(ToCopyBits) {
+    // signals
     signal input L_pos;
     signal input in[ToCopyBits];
     signal output out[ToCopyBits];
 
+    // copy over the block
     component ie[ToCopyBits];
     component mux[ToCopyBits];
     for (var i = 0; i < ToCopyBits; i++) {
@@ -28,18 +30,24 @@ template CopyOverBlock(ToCopyBits) {
 
 // Prepare 1 sha256 input block
 template Sha256InputBlock(BlockNumber) {
+    // constants
     var BLOCK_LEN = 512;
     var L_BITS = 64;
 
+    // variables
     var PreLBlockLen = BLOCK_LEN - L_BITS;
 
+    // signals
     signal input in[BLOCK_LEN];
     signal input len;
     signal input isLast;
     signal output out[BLOCK_LEN];
 
+    // prepare CopyOverBlock
     component cob = CopyOverBlock(BLOCK_LEN);
     cob.L_pos <== len - (BlockNumber * BLOCK_LEN);
+
+    // prepare L
     component n2b = Num2Bits(L_BITS);
     n2b.in <== len;
 
