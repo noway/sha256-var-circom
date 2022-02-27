@@ -50,6 +50,7 @@ template Sha256InputBlock(BlockNumber) {
     for (var i = 0; i < BLOCK_LEN; i++) { cob.in[i] <== in[i]; }
     for (var i = 0; i < PreLBlockLen; i++) { out[i] <== cob.out[i]; }
 
+    // copy over the L or the rest of the block
     component mux[BLOCK_LEN - PreLBlockLen];
     for (var i = PreLBlockLen; i < BLOCK_LEN; i++) {
         var j = i - PreLBlockLen;
