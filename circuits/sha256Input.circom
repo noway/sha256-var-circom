@@ -26,7 +26,7 @@ template CopyOverBlock(ToCopyBits) {
     }
 }
 
-template Sha256InputBlock(BlockNumber, BlockCount) {
+template Sha256InputBlock(BlockNumber) {
     var BLOCK_LEN = 512;
     var L_BITS = 64;
 
@@ -82,7 +82,7 @@ template Sha256Input(BlockCount) {
     for(var j = 0; j < BlockCount; j++) {
         var offset = j * BLOCK_LEN;
 
-        inputBlock[j] = Sha256InputBlock(j, BlockCount);
+        inputBlock[j] = Sha256InputBlock(j);
         inputBlock[j].len <== len;
         inputBlock[j].isNotLast <== j < BlockCount - 1;
         for (var i = 0; i < BLOCK_LEN; i++) { inputBlock[j].in[i] <== in[offset + i]; }
