@@ -44,6 +44,7 @@ template Sha256Input(BlockCount) {
 
     // copy over blocks
     component cob[BlockCount];
+    component n2b;
     for(var j = 0; j < BlockCount; j++) {
         var offset = j * BLOCK_LEN;
         if (j < BlockCount - 1) {
@@ -60,13 +61,15 @@ template Sha256Input(BlockCount) {
             cob[j].L_pos <== len - offset;
             for (var i = 0; i < PreLBlockLen; i++) { cob[j].in[i] <== in[offset + i]; }
             for (var i = 0; i < PreLBlockLen; i++) { out[j * BLOCK_LEN + i] <== cob[j].out[i]; }
+
+            // add L
+            n2b = Num2Bits(L_BITS);
+            n2b.in <== len;
+            for (var i = PreLBlockLen; i < BLOCK_LEN; i++) {
+                out[(BlockCount - 1) * BLOCK_LEN + i] <== n2b.out[BLOCK_LEN - 1 - i];
+            }
+
         }
     }
 
-    // add L
-    component n2b = Num2Bits(L_BITS);
-    n2b.in <== len;
-    for (var i = PreLBlockLen; i < BLOCK_LEN; i++) {
-        out[(BlockCount - 1) * BLOCK_LEN + i] <== n2b.out[BLOCK_LEN - 1 - i];
-    }
 }
