@@ -79,19 +79,6 @@ template Sha256Var(BlockSpace) {
     signal output out[SHA256_LEN];
 
 
-    // prepare sha256 inputs as if it were p + 1 blocks
-    // component input_j_block[MaxBlockCount];
-    // for (var p = 0; p < MaxBlockCount; p++) {
-    //     var blocks = p + 1;
-    //     input_j_block[p] = Sha256Input(blocks);
-    //     input_j_block[p].len <== len;
-    //     for (var j = 0; j < blocks; j++) {
-    //         for (var i = 0; i < BLOCK_LEN; i++) {
-    //             input_j_block[p].in[j * BLOCK_LEN + i] <== in[j * BLOCK_LEN + i];
-    //         }
-    //     }
-    // }
-
     // calculate number of blocks needed (as bits)
     signal len_plus_64;
     len_plus_64 <== len + 64;
@@ -102,29 +89,11 @@ template Sha256Var(BlockSpace) {
         shr.in[i] <== n2b.out[i];
     }
 
-    // switch between sha256 inputs based on number of blocks (len_plus_64 >> 9)
-    // component mmm = MultiMultiMux(BlockSpace, MaxLen);
-    // for (var p = 0; p < MaxBlockCount; p++) {
-    //     var blocks = p + 1;
-    //     // copy over blocks of the input into the multiplexer
-    //     for (var j = 0; j < blocks; j++) {
-    //         for (var i = 0; i < BLOCK_LEN; i++) {
-    //             mmm.in[p][j * BLOCK_LEN + i] <== input_j_block[p].out[j * BLOCK_LEN + i];
-    //         }
-    //     }
-    //     // pad with zeros for the inputs which have less than max blocks
-    //     for (var j = blocks; j < MaxBlockCount; j++) {
-    //         for (var i = 0; i < BLOCK_LEN; i++) {
-    //             mmm.in[p][j * BLOCK_LEN + i] <== 0;
-    //         }
-    //     }
-    // }
-    // for (var k = 0; k < BlockSpace; k++) { mmm.selector[k] <== shr.out[k]; }
-
     // calculate number of blocks needed (as integer)
     component b2n = Bits2Num(BlockSpace);
     for (var k = 0; k < BlockSpace; k++) { b2n.in[k] <== shr.out[k]; }
 
+    // prepare input based on length and number of blocks 
     component input_j_block = Sha256Input(MaxBlockCount);
     input_j_block.len <== len;
     input_j_block.tBlock <== b2n.out + 1;
@@ -134,13 +103,12 @@ template Sha256Var(BlockSpace) {
         }
     }
 
-
     // put the selected input into sha256
     component sha256_unsafe = Sha256_unsafe(MaxBlockCount);
     sha256_unsafe.tBlock <== b2n.out + 1;
     for (var j = 0; j < MaxBlockCount; j++) {
         for (var i = 0; i < BLOCK_LEN; i++) {
-            sha256_unsafe.in[j][i] <== input_j_block.out[j * BLOCK_LEN + i];//mmm.out[j * BLOCK_LEN + i];
+            sha256_unsafe.in[j][i] <== input_j_block.out[j * BLOCK_LEN + i];
         }
     }
 
