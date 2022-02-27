@@ -26,6 +26,7 @@ template CopyOverBlock(ToCopyBits) {
     }
 }
 
+// Prepare 1 sha256 input block
 template Sha256InputBlock(BlockNumber) {
     var BLOCK_LEN = 512;
     var L_BITS = 64;
@@ -62,9 +63,10 @@ template Sha256InputBlock(BlockNumber) {
     }
 }
 
-// Prepare sha256 input for Sha256_unsafe as if it had BlockCount blocks
+// Prepare sha256 input for Sha256_unsafe with tBlock as the current number of blocks
+// and MaxBlockCount being the maximum number of blocks
 // This template effectively implements https://datatracker.ietf.org/doc/html/rfc4634#section-4.1 as a circuit
-template Sha256Input(BlockCount) {
+template Sha256Input(MaxBlockCount) {
 
     // constants
     var BLOCK_LEN = 512;
@@ -74,15 +76,15 @@ template Sha256Input(BlockCount) {
     var PreLBlockLen = BLOCK_LEN - L_BITS;
 
     // signals
-    signal input in[BLOCK_LEN * BlockCount];
+    signal input in[BLOCK_LEN * MaxBlockCount];
     signal input len;
     signal input tBlock;
-    signal output out[BLOCK_LEN * BlockCount];
+    signal output out[BLOCK_LEN * MaxBlockCount];
 
     // copy over blocks
-    component inputBlock[BlockCount];
-    component iz[BlockCount];
-    for(var j = 0; j < BlockCount; j++) {
+    component inputBlock[MaxBlockCount];
+    component iz[MaxBlockCount];
+    for(var j = 0; j < MaxBlockCount; j++) {
         var offset = j * BLOCK_LEN;
 
         iz[j] = IsZero();
