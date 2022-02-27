@@ -94,12 +94,12 @@ template Sha256Var(BlockSpace) {
     for (var k = 0; k < BlockSpace; k++) { b2n.in[k] <== shr.out[k]; }
 
     // prepare input based on length and number of blocks 
-    component input_j_block = Sha256Input(MaxBlockCount);
-    input_j_block.len <== len;
-    input_j_block.tBlock <== b2n.out + 1;
+    component input_blocks = Sha256Input(MaxBlockCount);
+    input_blocks.len <== len;
+    input_blocks.tBlock <== b2n.out + 1;
     for (var j = 0; j < MaxBlockCount; j++) {
         for (var i = 0; i < BLOCK_LEN; i++) {
-            input_j_block.in[j * BLOCK_LEN + i] <== in[j * BLOCK_LEN + i];
+            input_blocks.in[j * BLOCK_LEN + i] <== in[j * BLOCK_LEN + i];
         }
     }
 
@@ -108,7 +108,7 @@ template Sha256Var(BlockSpace) {
     sha256_unsafe.tBlock <== b2n.out + 1;
     for (var j = 0; j < MaxBlockCount; j++) {
         for (var i = 0; i < BLOCK_LEN; i++) {
-            sha256_unsafe.in[j][i] <== input_j_block.out[j * BLOCK_LEN + i];
+            sha256_unsafe.in[j][i] <== input_blocks.out[j * BLOCK_LEN + i];
         }
     }
 
