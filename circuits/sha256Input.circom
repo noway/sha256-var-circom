@@ -76,6 +76,7 @@ template Sha256Input(BlockCount) {
     // signals
     signal input in[BLOCK_LEN * BlockCount];
     signal input len;
+    signal input tBlock;
     signal output out[BLOCK_LEN * BlockCount];
 
     // copy over blocks
@@ -85,7 +86,7 @@ template Sha256Input(BlockCount) {
         var offset = j * BLOCK_LEN;
 
         iz[j] = IsZero();
-        iz[j].in <== j - BlockCount + 1;
+        iz[j].in <== j - tBlock + 1;
         inputBlock[j] = Sha256InputBlock(j);
         inputBlock[j].len <== len;
         inputBlock[j].isLast <== iz[j].out;
