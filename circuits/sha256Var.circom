@@ -15,50 +15,6 @@ function pow(x, y) {
     }
 }
 
-// Switch between MultiMux[1-4] dynamically during compile time
-// MuxSpace is only supported to be between 1 and 4
-template MultiMultiMux(MuxSpace, n) {
-    var MaxVariants = pow(2, MuxSpace);
-
-    signal input in[MaxVariants][n];
-    signal input selector[MuxSpace];
-    signal output out[n];
-
-    component mux1 = MultiMux1(n);
-    component mux2 = MultiMux2(n);
-    component mux3 = MultiMux3(n);
-    component mux4 = MultiMux4(n);
-
-    if (MuxSpace == 1) {
-        for (var j = 0; j < MaxVariants; j++) {
-            for (var i = 0; i < n; i++) { mux1.c[i][j] <== in[j][i]; }
-        }
-        mux1.s <== selector[0];
-        for (var i = 0; i < n; i++) { out[i] <== mux1.out[i]; }
-    } 
-    else if (MuxSpace == 2) {
-        for (var j = 0; j < MaxVariants; j++) {
-            for (var i = 0; i < n; i++) { mux2.c[i][j] <== in[j][i]; }
-        }
-        for (var k = 0; k < MuxSpace; k++) { mux2.s[k] <== selector[k]; }
-        for (var i = 0; i < n; i++) { out[i] <== mux2.out[i]; }
-    }
-    else if (MuxSpace == 3) {
-        for (var j = 0; j < MaxVariants; j++) {
-            for (var i = 0; i < n; i++) { mux3.c[i][j] <== in[j][i]; }
-        }
-        for (var k = 0; k < MuxSpace; k++) { mux3.s[k] <== selector[k]; }
-        for (var i = 0; i < n; i++) { out[i] <== mux3.out[i]; }
-    }
-    else if (MuxSpace == 4) {
-        for (var j = 0; j < MaxVariants; j++) {
-            for (var i = 0; i < n; i++) { mux4.c[i][j] <== in[j][i]; }
-        }
-        for (var k = 0; k < MuxSpace; k++) { mux4.s[k] <== selector[k]; }
-        for (var i = 0; i < n; i++) { out[i] <== mux4.out[i]; }
-    }
-}
-
 // Caclulate sha256 of input of any length within (64 * (2 ^ BlockSpace)) characters
 // Takes in array of bits and length of the string in bits
 // If any of the bits after len are not 0, the result is undefined behavior
