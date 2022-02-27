@@ -80,12 +80,15 @@ template Sha256Input(BlockCount) {
 
     // copy over blocks
     component inputBlock[BlockCount];
+    component iz[BlockCount];
     for(var j = 0; j < BlockCount; j++) {
         var offset = j * BLOCK_LEN;
 
+        iz[j] = IsZero();
+        iz[j].in <== j - BlockCount + 1;
         inputBlock[j] = Sha256InputBlock(j);
         inputBlock[j].len <== len;
-        inputBlock[j].isLast <== j == BlockCount - 1;
+        inputBlock[j].isLast <== iz[j].out;
         for (var i = 0; i < BLOCK_LEN; i++) { inputBlock[j].in[i] <== in[offset + i]; }
         for (var i = 0; i < BLOCK_LEN; i++) { out[offset + i] <== inputBlock[j].out[i]; }
     }
