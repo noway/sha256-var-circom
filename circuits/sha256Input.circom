@@ -41,19 +41,18 @@ template Sha256InputBlock(BlockNumber, BlockCount) {
     component cob = CopyOverBlock(BLOCK_LEN);
     component n2b;
     cob.L_pos <== len - offset;
-    
+
+    for (var i = 0; i < BLOCK_LEN; i++) { cob.in[i] <== in[i]; }
+
     if (BlockNumber < BlockCount - 1) {
         // copy over block number BlockNumber
-        for (var i = 0; i < BLOCK_LEN; i++) { cob.in[i] <== in[i]; }
         for (var i = 0; i < BLOCK_LEN; i++) { out[i] <== cob.out[i]; }
     }
     else {
         // copy over pre-L block (last block before L)
         // this block is clipped because 64 bits are reserved for L
-        for (var i = 0; i < PreLBlockLen; i++) { cob.in[i] <== in[i]; }
-        for (var i = PreLBlockLen; i < BLOCK_LEN; i++) { cob.in[i] <== 0; }
-
         for (var i = 0; i < PreLBlockLen; i++) { out[i] <== cob.out[i]; }
+
         // add L
         n2b = Num2Bits(L_BITS);
         n2b.in <== len;
