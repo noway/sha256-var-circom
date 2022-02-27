@@ -36,7 +36,9 @@ template Sha256InputBlock(BlockNumber, BlockCount) {
     signal input len;
     signal output out[BLOCK_LEN];
 
-    var offset = BlockNumber * BLOCK_LEN;
+    signal offset;
+
+    offset <== BlockNumber * BLOCK_LEN;
 
     component cob = CopyOverBlock(BLOCK_LEN);
     cob.L_pos <== len - offset;
