@@ -87,7 +87,7 @@ template Sha256Input(BlockCount) {
         inputBlock[j].len <== len;
         inputBlock[j].isNotLast <== j < BlockCount - 1;
         for (var i = 0; i < BLOCK_LEN; i++) { inputBlock[j].in[i] <== in[offset + i]; }
-        for (var i = 0; i < BLOCK_LEN; i++) { out[j * BLOCK_LEN + i] <== inputBlock[j].out[i]; }
+        for (var i = 0; i < BLOCK_LEN; i++) { out[offset + i] <== inputBlock[j].out[i]; }
     }
 
 }
