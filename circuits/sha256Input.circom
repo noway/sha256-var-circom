@@ -1,4 +1,4 @@
-pragma circom 2.0.0;
+pragma circom 2.0.3;
 
 include "../snark-jwt-verify/circuits/sha256.circom";
 include "../snark-jwt-verify/circomlib/circuits/mux1.circom";
