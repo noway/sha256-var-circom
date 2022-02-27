@@ -34,7 +34,7 @@ template Sha256InputBlock(BlockNumber) {
 
     signal input in[BLOCK_LEN];
     signal input len;
-    signal input isNotLast;
+    signal input isLast;
     signal output out[BLOCK_LEN];
 
     signal offset;
@@ -55,9 +55,9 @@ template Sha256InputBlock(BlockNumber) {
     for (var i = PreLBlockLen; i < BLOCK_LEN; i++) {
         var j = i - PreLBlockLen;
         mux[j] = Mux1();
-        mux[j].c[0] <== n2b.out[BLOCK_LEN - 1 - i];
-        mux[j].c[1] <== cob.out[i];
-        mux[j].s <== isNotLast;
+        mux[j].c[1] <== n2b.out[BLOCK_LEN - 1 - i];
+        mux[j].c[0] <== cob.out[i];
+        mux[j].s <== isLast;
         out[i] <== mux[j].out;
     }
 }
@@ -85,7 +85,7 @@ template Sha256Input(BlockCount) {
 
         inputBlock[j] = Sha256InputBlock(j);
         inputBlock[j].len <== len;
-        inputBlock[j].isNotLast <== j < BlockCount - 1;
+        inputBlock[j].isLast <== j == BlockCount - 1;
         for (var i = 0; i < BLOCK_LEN; i++) { inputBlock[j].in[i] <== in[offset + i]; }
         for (var i = 0; i < BLOCK_LEN; i++) { out[offset + i] <== inputBlock[j].out[i]; }
     }
