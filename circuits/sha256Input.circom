@@ -38,12 +38,8 @@ template Sha256InputBlock(BlockNumber) {
     signal input isLast;
     signal output out[BLOCK_LEN];
 
-    signal offset;
-
-    offset <== BlockNumber * BLOCK_LEN;
-
     component cob = CopyOverBlock(BLOCK_LEN);
-    cob.L_pos <== len - offset;
+    cob.L_pos <== len - (BlockNumber * BLOCK_LEN);
     component n2b = Num2Bits(L_BITS);
     n2b.in <== len;
 
