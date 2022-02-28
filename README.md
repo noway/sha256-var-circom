@@ -47,5 +47,16 @@ We take the avaialble block space and prepare `2^BlockSpace` blocks. We put the 
 ## Limitations
 The bigger the block space, the bigger the circuit. While 1 and 2 block spaces are ok, the 3 block space is slow and the 4 is slower.
 
+## Performance
+Measured on a Mac
+
+|              | run time (s) | compile time (s) |
+|--------------|--------------|------------------|
+|              |              |                  |
+| BlockSpace=1 |       27.303 |            6.221 |
+| BlockSpace=2 |        96.13 |           12.055 |
+| BlockSpace=3 |       350.22 |           24.241 |
+| BlockSpace=4 |     1356.917 |           51.843 |
+
 ## Tests
 - Run `make test`
