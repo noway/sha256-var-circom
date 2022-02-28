@@ -52,7 +52,6 @@ Measured on a Mac
 
 |              | run time (s) | compile time (s) |
 |--------------|--------------|------------------|
-|              |              |                  |
 | BlockSpace=1 |       27.303 |            6.221 |
 | BlockSpace=2 |        96.13 |           12.055 |
 | BlockSpace=3 |       350.22 |           24.241 |
