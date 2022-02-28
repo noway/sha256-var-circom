@@ -3,10 +3,10 @@ const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const assert = chai.assert;
 
-const {buffer2bitArray, bitArray2buffer, arrayChunk, padMessage} = require("./helpers/utils");
+const {bufferToBitArray, bitArrayToBuffer, arrayChunk, padMessage} = require("./helpers/utils");
 
 function genSha256Inputs(input, nCount, nWidth = 512, inParam = "in") {
-    var segments = arrayChunk(padMessage(buffer2bitArray(Buffer.from(input))), nWidth);
+    var segments = arrayChunk(padMessage(bufferToBitArray(Buffer.from(input))), nWidth);
     const tBlock = segments.length / (512 / nWidth);
     
     if(segments.length < nCount) {
@@ -21,7 +21,7 @@ function genSha256Inputs(input, nCount, nWidth = 512, inParam = "in") {
 }
 
 function msgToBits(msg) {
-    let inn = buffer2bitArray(Buffer.from(msg))
+    let inn = bufferToBitArray(Buffer.from(msg))
     const blocks = Math.floor((inn.length + 64) / 512) + 1
     const overall_len = blocks * 512
     const add_bits = overall_len - inn.length
@@ -44,12 +44,12 @@ describe("Sha256", function () {
 
             const inn = msgToBits(message)
 
-            const witness = await cir.calculateWitness({ "in": inn, len }, true);
+            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: 1 }, true);
 
             const arrOut = witness.slice(1, 1 + 512);
-            const actual = bitArray2buffer(arrOut).toString("hex");
+            const actual = bitArrayToBuffer(arrOut).toString("hex");
 
-            const expected = bitArray2buffer(genSha256Inputs(message, 1).segments[0]).toString('hex')
+            const expected = bitArrayToBuffer(genSha256Inputs(message, 1).segments[0]).toString('hex')
 
             assert.equal(actual, expected)
         }
@@ -66,13 +66,13 @@ describe("Sha256", function () {
             const inn = msgToBits(message)
             console.log("message", message, len)
             
-            const witness = await cir.calculateWitness({ "in": inn, len }, true);
+            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: 2 }, true);
 
             const arrOut = witness.slice(1, 1 + (2*512));
-            const actual = bitArray2buffer(arrOut).toString("hex");
+            const actual = bitArrayToBuffer(arrOut).toString("hex");
             
             const segments = genSha256Inputs(message, 2).segments
-            const expected = bitArray2buffer(segments[0].concat(segments[1])).toString('hex')
+            const expected = bitArrayToBuffer(segments[0].concat(segments[1])).toString('hex')
             
             assert.equal(actual, expected)
         }
@@ -88,13 +88,13 @@ describe("Sha256", function () {
             const inn = msgToBits(message)
             console.log("message", message, len)
             
-            const witness = await cir.calculateWitness({ "in": inn, len }, true);
+            const witness = await cir.calculateWitness({ "in": inn, len, tBlock: 3 }, true);
 
             const arrOut = witness.slice(1, (3*512));
-            const actual = bitArray2buffer(arrOut).toString("hex");
+            const actual = bitArrayToBuffer(arrOut).toString("hex");
 
             const segments = genSha256Inputs(message, 3).segments
-            const expected = bitArray2buffer(segments[0].concat(segments[1]).concat(segments[2])).toString('hex')
+            const expected = bitArrayToBuffer(segments[0].concat(segments[1]).concat(segments[2])).toString('hex')
 
             assert.equal(actual, expected)
         }

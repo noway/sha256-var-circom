@@ -1,13 +1,13 @@
 const chai = require("chai");
 const path = require("path");
+const crypto = require("crypto");
 const wasm_tester = require("circom_tester").wasm;
 const assert = chai.assert;
 
-const {buffer2bitArray, bitArray2buffer} = require("./helpers/utils");
-const Sha256 = require('./helpers/sha256')
+const {bufferToBitArray, bitArrayToBuffer} = require("./helpers/utils");
 
 function msgToBits(msg, blocks) {
-    let inn = buffer2bitArray(Buffer.from(msg))
+    let inn = bufferToBitArray(Buffer.from(msg))
     const overall_len = blocks * 512
     const add_bits = overall_len - inn.length
     inn = inn.concat(Array(add_bits).fill(0));
@@ -31,8 +31,8 @@ async function testBlockSpace(block_space) {
         const witness = await cir.calculateWitness({ "in": inn, len }, true);
 
         const arrOut = witness.slice(1, 257);
-        const actualHash = bitArray2buffer(arrOut).toString("hex");
-        const expectedHash = Sha256.hash(message)
+        const actualHash = bitArrayToBuffer(arrOut).toString("hex");
+        const expectedHash = crypto.createHash('sha256').update(message).digest('hex')
         assert.equal(actualHash, expectedHash)
     }
 }

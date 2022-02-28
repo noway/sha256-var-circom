@@ -6,10 +6,12 @@ include "../snark-jwt-verify/circomlib/circuits/mux1.circom";
 // Copy over 1 block of sha256 input
 // Sets bit to 1 at L_pos
 template CopyOverBlock(ToCopyBits) {
+    // signals
     signal input L_pos;
     signal input in[ToCopyBits];
     signal output out[ToCopyBits];
 
+    // copy over the block
     component ie[ToCopyBits];
     component mux[ToCopyBits];
     for (var i = 0; i < ToCopyBits; i++) {
@@ -26,9 +28,49 @@ template CopyOverBlock(ToCopyBits) {
     }
 }
 
-// Prepare sha256 input for Sha256_unsafe as if it had BlockCount blocks
+// Prepare 1 sha256 input block
+template Sha256InputBlock(BlockNumber) {
+    // constants
+    var BLOCK_LEN = 512;
+    var L_BITS = 64;
+
+    // variables
+    var PreLBlockLen = BLOCK_LEN - L_BITS;
+
+    // signals
+    signal input in[BLOCK_LEN];
+    signal input len;
+    signal input isLast;
+    signal output out[BLOCK_LEN];
+
+    // prepare CopyOverBlock
+    component cob = CopyOverBlock(BLOCK_LEN);
+    cob.L_pos <== len - (BlockNumber * BLOCK_LEN);
+
+    // prepare L
+    component n2b = Num2Bits(L_BITS);
+    n2b.in <== len;
+
+    // copy over the block up to pre-L length
+    for (var i = 0; i < BLOCK_LEN; i++) { cob.in[i] <== in[i]; }
+    for (var i = 0; i < PreLBlockLen; i++) { out[i] <== cob.out[i]; }
+
+    // copy over the L or the rest of the block
+    component mux[BLOCK_LEN - PreLBlockLen];
+    for (var i = PreLBlockLen; i < BLOCK_LEN; i++) {
+        var j = i - PreLBlockLen;
+        mux[j] = Mux1();
+        mux[j].c[1] <== n2b.out[BLOCK_LEN - 1 - i];
+        mux[j].c[0] <== cob.out[i];
+        mux[j].s <== isLast;
+        out[i] <== mux[j].out;
+    }
+}
+
+// Prepare sha256 input for Sha256_unsafe with tBlock as the current number of blocks
+// and MaxBlockCount being the maximum number of blocks
 // This template effectively implements https://datatracker.ietf.org/doc/html/rfc4634#section-4.1 as a circuit
-template Sha256Input(BlockCount) {
+template Sha256Input(MaxBlockCount) {
 
     // constants
     var BLOCK_LEN = 512;
@@ -37,36 +79,25 @@ template Sha256Input(BlockCount) {
     // variables
     var PreLBlockLen = BLOCK_LEN - L_BITS;
 
-    // signas
-    signal input in[BLOCK_LEN * BlockCount];
+    // signals
+    signal input in[BLOCK_LEN * MaxBlockCount];
     signal input len;
-    signal output out[BLOCK_LEN * BlockCount];
+    signal input tBlock;
+    signal output out[BLOCK_LEN * MaxBlockCount];
 
     // copy over blocks
-    component cob[BlockCount];
-    for(var j = 0; j < BlockCount; j++) {
+    component inputBlock[MaxBlockCount];
+    component iz[MaxBlockCount];
+    for(var j = 0; j < MaxBlockCount; j++) {
         var offset = j * BLOCK_LEN;
-        if (j < BlockCount - 1) {
-            // copy over block number j
-            cob[j] = CopyOverBlock(BLOCK_LEN);
-            cob[j].L_pos <== len - offset;
-            for (var i = 0; i < BLOCK_LEN; i++) { cob[j].in[i] <== in[offset + i]; }
-            for (var i = 0; i < BLOCK_LEN; i++) { out[j * BLOCK_LEN + i] <== cob[j].out[i]; }
-        }
-        else {
-            // copy over pre-L block (last block before L)
-            // this block is clipped because 64 bits are reserved for L
-            cob[j] = CopyOverBlock(PreLBlockLen);
-            cob[j].L_pos <== len - offset;
-            for (var i = 0; i < PreLBlockLen; i++) { cob[j].in[i] <== in[offset + i]; }
-            for (var i = 0; i < PreLBlockLen; i++) { out[j * BLOCK_LEN + i] <== cob[j].out[i]; }
-        }
+
+        iz[j] = IsZero();
+        iz[j].in <== j - tBlock + 1;
+        inputBlock[j] = Sha256InputBlock(j);
+        inputBlock[j].len <== len;
+        inputBlock[j].isLast <== iz[j].out;
+        for (var i = 0; i < BLOCK_LEN; i++) { inputBlock[j].in[i] <== in[offset + i]; }
+        for (var i = 0; i < BLOCK_LEN; i++) { out[offset + i] <== inputBlock[j].out[i]; }
     }
 
-    // add L
-    component n2b = Num2Bits(L_BITS);
-    n2b.in <== len;
-    for (var i = PreLBlockLen; i < BLOCK_LEN; i++) {
-        out[(BlockCount - 1) * BLOCK_LEN + i] <== n2b.out[BLOCK_LEN - 1 - i];
-    }
 }
