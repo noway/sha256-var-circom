@@ -42,7 +42,7 @@ For more usage, see [test/sha256var.js](test/sha256var.js).
 - 4 block space = max 16 blocks = max 8128 bits = 0-1015 characters
 
 ## How it works
-The circuit prepares inputs for every possible block count of the input. I.e., if 4 blocks are max, the 1, 2, 3, and 4 block inputs are prepared. Then, the correct block count is determined by using a multiplexer with length as the selector.
+We take the avaialble block space and prepare `2^BlockSpace` blocks. We put the data into the blocks. Each block is prepared using the `Sha256InputBlock` component which expects the block to either be the last block or not. If it is the last block, `L` is added in the last 64 bits. If it's not, block is copied over normally. The `1` bit is also set at the end of the input length.
 
 ## Limitations
 The bigger the block space, the bigger the circuit. While 1 and 2 block spaces are ok, the 3 block space is slow and the 4 is slower.
