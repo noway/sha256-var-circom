@@ -50,12 +50,13 @@ The bigger the block space, the bigger the circuit. While 1 and 2 block spaces a
 ## Performance
 Measured on a Mac
 
-|              | run time (s) | compile time (s) |
-|--------------|--------------|------------------|
-| BlockSpace=1 |       27.303 |            6.221 |
-| BlockSpace=2 |        96.13 |           12.055 |
-| BlockSpace=3 |       350.22 |           24.241 |
-| BlockSpace=4 |     1356.917 |           51.843 |
+|              | compile time (s) | run time (s) |
+|--------------|------------------|--------------|
+| BlockSpace=1 |            6.221 |       27.303 |
+| BlockSpace=2 |           12.055 |        96.13 |
+| BlockSpace=3 |           24.241 |       350.22 |
+| BlockSpace=4 |           51.843 |     1356.917 |
+| BlockSpace=4 |           85.466 |       51.843 |
 
 ## Tests
 - Run `make test`
