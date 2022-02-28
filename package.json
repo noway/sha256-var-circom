@@ -1,6 +1,6 @@
 {
   "name": "sha256-var-circom",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Variable length sha256 hash function in Circom",
   "main": "index.js",
   "repository": "https://github.com/noway/sha256-var-circom",
