@@ -57,5 +57,7 @@ Measured on a Mac
 | BlockSpace=3 |           24.241 |       350.22 |                          1738150 |
 | BlockSpace=4 |           51.843 |     1356.917 |                          3475234 |
 
+## Install 
+- Run `make`
 ## Tests
 - Run `make test`
